@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+# Local rolling prompt buffer (never publish — it holds fetched prompts).
+.cache/
+stableyogi_portal/.cache/
+# User-specific / secret provider config (e.g. the NSFW portal URL + overrides).
+# Never commit this — keys live in Forge settings, private URLs live here.
+providers.local.json

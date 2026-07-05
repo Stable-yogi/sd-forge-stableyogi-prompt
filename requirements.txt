@@ -1,0 +1,2 @@
+# Bundled with Forge/A1111; listed for completeness. Falls back to urllib if absent.
+requests>=2.0

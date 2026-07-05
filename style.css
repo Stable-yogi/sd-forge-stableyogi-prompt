@@ -1,0 +1,67 @@
+/* StableYogi Prompt — compact auto-fetch toggle pinned inside the prompt box's corner.
+   The checkbox is injected as a sibling of the prompt textarea; here we lift it out of the
+   flex flow and anchor it bottom-left, so it overlays the corner and costs no extra height. */
+
+#txt2img_prompt_row,
+#img2img_prompt_row {
+    position: relative;
+}
+
+.syprompt-auto-toggle {
+    position: absolute !important;
+    left: 10px;
+    bottom: 8px;
+    z-index: 20;
+    width: auto !important;
+    min-width: 0 !important;
+    flex: none !important;
+    margin: 0 !important;
+    padding: 3px 9px !important;
+    background: rgba(20, 22, 30, 0.66);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    opacity: 0.72;
+    transition: opacity 0.15s ease, background 0.15s ease;
+    backdrop-filter: blur(2px);
+}
+
+.syprompt-auto-toggle:hover {
+    opacity: 1;
+    background: rgba(28, 31, 42, 0.9);
+}
+
+/* Tidy the inner Gradio label + checkbox so the pill stays small. */
+.syprompt-auto-toggle label,
+.syprompt-auto-toggle span {
+    font-size: 11px !important;
+    line-height: 1 !important;
+    gap: 5px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #d3d7e0 !important;
+    white-space: nowrap;
+}
+
+.syprompt-auto-toggle input[type="checkbox"] {
+    width: 14px !important;
+    height: 14px !important;
+    min-width: 14px !important;
+    margin: 0 !important;
+}
+
+/* Brand mark (StableYogi favicon, assets/stableyogi-logo.svg) before the panel title and the
+   corner pill — replaces the placeholder emoji with the real portal logo. Embedded as a data URI
+   so it's self-contained (no static-file serving needed) and scales with the text (em units). */
+.syprompt-accordion .label-wrap > span:first-child::before,
+.syprompt-auto-toggle label span::before {
+    content: "";
+    display: inline-block;
+    width: 1.15em;
+    height: 1.15em;
+    margin-right: 0.4em;
+    vertical-align: -0.22em;
+    flex: none;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBhMGEwZiIvPgogIDxjaXJjbGUgY3g9IjE2IiBjeT0iMTYiIHI9IjEwIiBmaWxsPSJub25lIiBzdHJva2U9IiNkNGE1MzciIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHBhdGggZD0iTTE2IDggQzE2IDgsIDEyIDEzLCAxMiAxNiBDMTIgMTguMiwgMTMuOCAyMCwgMTYgMjAgQzE4LjIgMjAsIDIwIDE4LjIsIDIwIDE2IEMyMCAxMywgMTYgOCwgMTYgOFoiIGZpbGw9IiNkNGE1MzciIG9wYWNpdHk9IjAuOSIvPgogIDxsaW5lIHgxPSIxNiIgeTE9IjIwIiB4Mj0iMTYiIHkyPSIyNSIgc3Ryb2tlPSIjZDRhNTM3IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTEyIDI0IFExNiAyMiAyMCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDRhNTM3IiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=");
+    background-size: contain;
+    background-repeat: no-repeat;
+}

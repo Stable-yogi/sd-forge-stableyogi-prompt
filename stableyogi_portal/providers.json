@@ -1,0 +1,18 @@
+{
+  "_comment": "Sources for the StableYogi Prompt extension. Add or change a source by editing this file (or a git-ignored providers.local.json). No code changes needed.",
+  "providers": [
+    {
+      "id": "stableyogi-sfw",
+      "label": "StableYogi Prompt Engine (SFW)",
+      "base_url_b64": "aHR0cHM6Ly9zdGFibGV5b2dpLmNvbS9hcGkvcHJvbXB0LWVuZ2luZQ==",
+      "rating": "sfw",
+      "auth_header": "X-API-Key",
+      "modes": ["Solo Female", "Solo Male", "Couple F+M", "Couple F+F", "Couple M+M"],
+      "default_quality": "ultra-detailed, photorealistic, sharp focus",
+      "default_style": "nl",
+      "enabled": true,
+      "requires_optin": false,
+      "signup_url": "https://stableyogi.com"
+    }
+  ]
+}
