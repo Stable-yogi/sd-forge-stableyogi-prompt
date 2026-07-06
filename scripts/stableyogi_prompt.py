@@ -130,6 +130,7 @@ class StableYogiPrompt(scripts.Script):
             with gr.Row():
                 get_btn = gr.Button("🎲 Get prompt", variant="primary", scale=2)
                 test_btn = gr.Button("🔑 Test key", scale=1)
+                clear_btn = gr.Button("🧹 Refresh", scale=1)
             preview = gr.Textbox(label="Fetched prompt (editable)", lines=3, show_copy_button=True)
             with gr.Row():
                 inject_mode = gr.Radio(label="", choices=["Replace prompt", "Append to prompt"],
@@ -185,6 +186,11 @@ class StableYogiPrompt(scripts.Script):
             ok = _persist_key(p, key_v)
             return "💾 Key saved." if ok else "⚠️ Could not save key."
 
+        def _do_clear_cache():
+            n = buf.clear()
+            return (f"🧹 Cleared {n} stored prompt{'' if n == 1 else 's'}. "
+                    "Next **Get prompt** pulls fresh.")
+
         def _on_provider(provider_label):
             p = _provider(provider_label)
             m = p.modes or ["Solo Female"]
@@ -196,6 +202,7 @@ class StableYogiPrompt(scripts.Script):
                       fn=None, js=_INJECT_JS, inputs=[preview, inject_mode], outputs=[])
         send_btn.click(fn=None, js=_INJECT_JS, inputs=[preview, inject_mode], outputs=[])
         test_btn.click(_do_test, inputs=[provider_dd, api_key], outputs=[status])
+        clear_btn.click(_do_clear_cache, inputs=[], outputs=[status])
         refresh_modes.click(_do_refresh_modes, inputs=[provider_dd, api_key], outputs=[subjects])
         save_key_btn.click(_do_save_key, inputs=[provider_dd, api_key], outputs=[status])
         provider_dd.change(_on_provider, inputs=[provider_dd], outputs=[api_key, subjects])

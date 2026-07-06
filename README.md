@@ -14,6 +14,7 @@ Built by [stableyogi.com](https://stableyogi.com). Requires an account key (Sett
 
 ## Using it
 - **Get prompt** — drops a ready-made prompt into the box.
+- **Refresh** — clears stored prompts and pulls a fresh set on the next Get prompt.
 - **Subject** — pick who the prompt is about (refresh the list with 🔄).
 - **Trigger / Quality / Style** — prepend your LoRA word, add a quality suffix, choose sentence (`nl`)
   or tag (`tags`) style.

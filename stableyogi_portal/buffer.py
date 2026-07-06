@@ -66,6 +66,16 @@ def signature(provider, subjects, trigger, quality, style):
                         (quality or "").strip(), style or "nl"])
 
 
+def clear():
+    """Drop everything held locally (in-memory + on disk). The next request fetches fresh.
+    Returns the number of items discarded, for a friendly status line."""
+    with _LOCK:
+        n = sum(len(e.get("items", [])) for e in _BUFFERS.values())
+        _BUFFERS.clear()
+        _save()   # persists the now-empty state (no leftover file to reload at startup)
+    return n
+
+
 def status(sig):
     """Short status line for the panel, e.g. 'ready 18 · 3400/day left'."""
     with _LOCK:

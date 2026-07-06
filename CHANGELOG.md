@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.4.0
+- Added a **Refresh** button to clear stored prompts and pull a fresh set.
+
 ## v1.3.0
 - Reliability and efficiency improvements.
 - Simplified the panel (removed the prompt-seed field).
