@@ -61,16 +61,26 @@ def _live(p):
     return dataclasses.replace(p, base_url=url)
 
 
+# Marker stored in a provider's key setting when the user deliberately clears it, so we do NOT
+# fall back to the pre-loaded providers.local.json default (which otherwise makes a key impossible
+# to remove — an empty setting is indistinguishable from "never set").
+_KEY_CLEARED = "__sy_cleared__"
+
+
 def _key(p):
-    """Saved key (Forge settings) if present, else the pre-loaded providers.local.json default."""
+    """Saved key (Forge settings) if present, else the pre-loaded providers.local.json default.
+    A deliberately-cleared key returns empty — the default is NOT re-applied."""
     saved = (getattr(shared.opts, p.key_opt, "") or "").strip()
+    if saved == _KEY_CLEARED:
+        return ""
     return saved or (p.default_key or "").strip()
 
 
 def _persist_key(p, key):
-    """Save a key into Forge settings so it survives restarts and auto-fetch can read it."""
+    """Save a key into Forge settings so it survives restarts and auto-fetch can read it.
+    An empty value is stored as the cleared-marker so the pre-loaded default won't re-apply."""
     try:
-        shared.opts.set(p.key_opt, (key or "").strip())
+        shared.opts.set(p.key_opt, (key or "").strip() or _KEY_CLEARED)
         shared.opts.save(shared.config_filename)
         return True
     except Exception as e:
@@ -117,6 +127,7 @@ class StableYogiPrompt(scripts.Script):
                 api_key = gr.Textbox(label="API key (Pro)", type="password", placeholder="sy-...",
                                      value=(_key(_USABLE[0]) if _USABLE else ""), scale=4)
                 save_key_btn = gr.Button("💾 Save key", scale=0, min_width=90)
+                clear_key_btn = gr.Button("🗑 Clear", scale=0, min_width=80)
             with gr.Row():
                 provider_dd = gr.Dropdown(label="Source", choices=_LABELS,
                                           value=(_LABELS[0] if _LABELS else None), scale=3)
@@ -184,7 +195,17 @@ class StableYogiPrompt(scripts.Script):
         def _do_save_key(provider_label, key_v):
             p = _provider(provider_label)
             ok = _persist_key(p, key_v)
-            return "💾 Key saved." if ok else "⚠️ Could not save key."
+            if not ok:
+                return "⚠️ Could not save key."
+            return "💾 Key saved." if (key_v or "").strip() else "🗑 Key removed."
+
+        def _do_clear_key(provider_label):
+            """Remove the key (also overrides the pre-loaded default), empty the box, and drop any
+            prompts fetched with the old key so the next fetch uses the new one."""
+            p = _provider(provider_label)
+            _persist_key(p, "")          # stored as the cleared-marker -> _key() returns ""
+            buf.clear()
+            return "", "🗑 Key removed. Paste a different key and click 💾 Save to switch."
 
         def _do_clear_cache():
             n = buf.clear()
@@ -205,6 +226,7 @@ class StableYogiPrompt(scripts.Script):
         clear_btn.click(_do_clear_cache, inputs=[], outputs=[status])
         refresh_modes.click(_do_refresh_modes, inputs=[provider_dd, api_key], outputs=[subjects])
         save_key_btn.click(_do_save_key, inputs=[provider_dd, api_key], outputs=[status])
+        clear_key_btn.click(_do_clear_key, inputs=[provider_dd], outputs=[api_key, status])
         provider_dd.change(_on_provider, inputs=[provider_dd], outputs=[api_key, subjects])
         history.change(fn=lambda h: h or "", inputs=[history], outputs=[preview]).then(
                       fn=None, js=_INJECT_JS, inputs=[preview, inject_mode], outputs=[])
