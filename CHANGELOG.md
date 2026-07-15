@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.5.0
+- **Fairer quota use:** prompts are now fetched exactly as needed — one per generation — so your
+  hourly/daily allowance is spent 1:1 with the prompts you actually use, instead of in bulk.
+
 ## v1.4.0
 - Added a **Refresh** button to clear stored prompts and pull a fresh set.
 
